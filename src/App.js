@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Recap from './recap.js'
+import Recap from './components/recap.js'
 
 function App() {
   return (
