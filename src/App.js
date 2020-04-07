@@ -1,13 +1,24 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 import Recap from './components/recap.js'
 
 function App() {
   return (
-    <div className="App">
-       <Recap/>
+
+    <div className="todo d-flex justify-content-center align-items-center bg-warning">
+      <div className="w-50">
+        <nav className="navbar navbar-light bg-dark">
+          <div className=" navbar-brand text-light mx-auto ">
+            To-Do List
+          </div>
+
+        </nav>
+
+        <Recap />
+      </div>
     </div>
+
+
+
   );
 }
 

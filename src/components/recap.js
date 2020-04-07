@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
-import Popup from './popup.js'
+import Popup from './popup.js';
+import Complete from './Complete';
+import All from './All';
+import Ongoing from './Ongoing'
 
-class Recap extends React.Component {
+
+class Recap extends Component {
     constructor() {
         super();
         this.state = {
             text: '',
             list: [],
             showPopup: false,
-            id: ''
+            id: '',
+            complete: [],
+            showAll: true,
+            showComplete: false,
+            showOngoing: false
         }
-        // this.handleDelete = this.handleDelete.bind(this);
     }
 
     togglePopup = (id) => {
@@ -28,35 +35,27 @@ class Recap extends React.Component {
     }
 
     handleSubmit = () => {
-        // const newList = [];
-        // newList.concat(this.state.text);
         if (this.state.text !== "") {
-
-
             this.setState({
                 list: [...this.state.list, this.state.text],
                 text: ''
             });
-            // console.log(this.state);
+
         }
     }
 
     handleDelete = (id, e) => {
-        //  e.preventdefault();
-        //console.log(key);
         const arr = this.state.list;
-        //console.log(arr);
         arr.splice(id, 1)
         this.setState({
             list: arr
         });
     }
 
-    handleUpdate = (key) => {
-        //console.log(key);
-        if (key !== '') {
+    handleUpdate = (Updated) => {
+        if (Updated !== '') {
             const arr = this.state.list;
-            arr[this.state.id] = key;
+            arr[this.state.id] = Updated;
             this.setState({
                 list: arr,
                 showPopup: !this.state.showPopup,
@@ -64,32 +63,107 @@ class Recap extends React.Component {
             })
         }
     }
+    handleComplete = (id) => {
+        const arr = this.state.list;
+        const ar = arr[id]
+        arr.splice(id, 1)
+        this.setState({
+            list: arr,
+            complete: [...this.state.complete, ar]
+        });
+    }
+    delComplete = (id) => {
+        const arr = this.state.complete;
+        arr.splice(id, 1);
+        this.setState({
+            complete: arr
+        })
+    }
+
+    showAll = () => {
+        this.setState({
+            showAll: true,
+            showOngoing: false,
+            showComplete: false
+        })
+    }
+    showComplete = () => {
+        this.setState({
+            showAll: false,
+            showOngoing: false,
+            showComplete: true
+        })
+
+    }
+    showOngoing = () => {
+        this.setState({
+            showAll: false,
+            showOngoing: true,
+            showComplete: false
+        })
+
+    }
+
+
 
 
     render() {
-        const { text, list ,id} = this.state;
-        const arr =list;
+        const { text, list, id, complete } = this.state;
+        const arr = list;
         return (
 
 
-            <div>
+            <div className="text-center">
+                <input type="text" className="form-control" onChange={this.handleChange} value={text} placeholder="Enter Your memo" />
+                <button className="btn btn-outline-primary " onClick={this.handleSubmit}>Submit</button>
+                <br />
 
-                {/* {text}<br/> */}
 
-                <input type="text" onChange={this.handleChange} value={text} />
-                <button onClick={this.handleSubmit}>Submit</button>
+                <div className="card text-center">
+                    <div className="card-header">
+                        <ul className="nav nav-tabs card-header-tabs">
+                            <li className="nav-item">
+                                <button className="nav-link active" onClick={this.showAll}>All</button>
+                            </li>
+                            <li className="nav-item">
+                                <button className="nav-link" onClick={this.showOngoing}>Ongoing</button>
 
-                <ul type='circle'>
-                    {this.state.list.map((i, id) => (
-                        <li key={id} className="text-dark">
-                            {i}
-                            <button onClick={e => this.handleDelete(id, e)}>Delete</button>
-                            <button onClick={e => this.togglePopup(id, e)}>update</button>
-                        </li>
-                    )
-                    )}
-                </ul>
-                
+                            </li>
+                            <li className="nav-item">
+                                <button className="nav-link" onClick={this.showComplete}>Complete</button>
+
+                            </li>
+                        </ul>
+                    </div>
+
+                    {this.state.list.length === 0
+                        ?
+                        <div className="card-body">No remainingTasks </div>
+                        :
+                        <div className="card-body">
+
+
+                            {this.state.showAll ? <All list={list}
+                                handleDelete={this.handleDelete}
+                                togglePopup={this.togglePopup}
+                                handleComplete={this.handleComplete}
+                                task={complete}
+                                delete={this.delComplete}
+                            /> : null}
+
+                            {this.state.showOngoing ? <Ongoing list={list}
+                                handleDelete={this.handleDelete}
+                                togglePopup={this.togglePopup}
+                                handleComplete={this.handleComplete} /> : null}
+
+                            {this.state.showComplete ? <Complete
+                                task={complete}
+                                delete={this.delComplete} /> : null}
+                        </div>
+                    }
+                </div>
+
+
                 {this.state.showPopup ?
                     <Popup
                         text={arr[id]}
